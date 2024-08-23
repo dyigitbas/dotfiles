@@ -185,31 +185,6 @@ properties:
     ########################################
     ### Denizhan Custom
     ########################################
-    ### PowerToys Key Remappings
-    ### -------------------------------------
-    - resource: Microsoft.PowerToys.KeyboardManager/Remappings
-      directives:
-        description: Custom key remappings
-        allowPrerelease: true
-      settings:
-        remappings:
-          - original: Win (Left)
-            remapped: Ctrl (Left)
-          - original: Alt (Left)
-            remapped: Ctrl (Left)
-          - original: Ctrl (Left)
-            remapped: Win (Left)
-        shortcutRemappings:
-          - original: [Ctrl (Left), Tab]
-            remapped: [Win (Left), Shift (Left), Right]
-          - original: [Ctrl (Left), Space]
-            remapped: [Ctrl (Left), ]]
-          - original: [Ctrl (Left), H]
-            remapped: [Alt (Left), Esc]
-          - original: [Ctrl (Left), Shift (Left), S]
-            remapped: [Win (Left), Shift (Left), S]
-          - original: [Ctrl (Left), Shift (Left), Space]
-            remapped: [Ctrl (Left), Tab]
     ### Taskbar Customization
     ### -------------------------------------
     - resource: Microsoft.Windows.Desktop/Taskbar
@@ -223,3 +198,4 @@ properties:
           - appId: Microsoft.Teams
           - appId: Microsoft.Office.OUTLOOK
         unpinAll: true
+
