@@ -8,25 +8,38 @@ properties:
         description: Customize the Windows taskbar to only include Chrome, Teams, and Outlook
       settings:
         SetScript: |
-          # Define the paths to the app shortcuts
-          $chromePath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk"
-          $teamsPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Teams.lnk"
-          $outlookPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office\Outlook.lnk"
+          try {
+              # Define the paths to the app shortcuts
+              $chromePath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk"
+              $teamsPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Teams.lnk"
+              $outlookPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office\Outlook.lnk"
     
-          # Unpin all apps from the taskbar
-          $shell = New-Object -ComObject shell.application
-          $taskBar = $shell.Namespace("Shell:TaskBar")
-          $taskBarItems = $taskBar.Items()
-          
-          foreach ($item in $taskBarItems) {
-              $item.InvokeVerb("unpin from taskbar")
+              # Check if the shortcuts exist
+              if (-not (Test-Path $chromePath)) { throw "Chrome shortcut not found at $chromePath" }
+              if (-not (Test-Path $teamsPath)) { throw "Teams shortcut not found at $teamsPath" }
+              if (-not (Test-Path $outlookPath)) { throw "Outlook shortcut not found at $outlookPath" }
+    
+              # Unpin all apps from the taskbar
+              $shell = New-Object -ComObject shell.application
+              if ($shell -eq $null) { throw "Failed to create Shell.Application COM object" }
+              
+              $taskBar = $shell.Namespace("Shell:TaskBar")
+              if ($taskBar -eq $null) { throw "Failed to access TaskBar namespace" }
+              
+              $taskBarItems = $taskBar.Items()
+              
+              foreach ($item in $taskBarItems) {
+                  $item.InvokeVerb("unpin from taskbar")
+              }
+    
+              # Pin specified apps to the taskbar
+              $shell.NameSpace((Get-Item $chromePath).DirectoryName).ParseName((Get-Item $chromePath).Name).InvokeVerb('Pin to taskbar')
+              $shell.NameSpace((Get-Item $teamsPath).DirectoryName).ParseName((Get-Item $teamsPath).Name).InvokeVerb('Pin to taskbar')
+              $shell.NameSpace((Get-Item $outlookPath).DirectoryName).ParseName((Get-Item $outlookPath).Name).InvokeVerb('Pin to taskbar')
+          } catch {
+              Write-Error "An error occurred: $_"
+              throw $_
           }
-    
-          # Pin specified apps to the taskbar
-          $shell = New-Object -ComObject Shell.Application
-          $shell.NameSpace((Get-Item $chromePath).DirectoryName).ParseName((Get-Item $chromePath).Name).InvokeVerb('Pin to taskbar')
-          $shell.NameSpace((Get-Item $teamsPath).DirectoryName).ParseName((Get-Item $teamsPath).Name).InvokeVerb('Pin to taskbar')
-          $shell.NameSpace((Get-Item $outlookPath).DirectoryName).ParseName((Get-Item $outlookPath).Name).InvokeVerb('Pin to taskbar')
         GetScript: return $false
         TestScript: return $false
 
