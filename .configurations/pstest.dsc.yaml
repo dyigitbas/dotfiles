@@ -5,7 +5,7 @@ properties:
     - resource: PSDscResources/Script
       id: UpdatePowerToysConfig
       directives:
-        description: Update PowerToys Keyboard Manager default.json file with custom key mappings
+        description: Create or update PowerToys Keyboard Manager default.json file with custom key mappings
       settings:
         SetScript: |
           $defaultJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\default.json"
@@ -38,9 +38,15 @@ properties:
           }
           '@
 
-          # Check if the path exists
+          # Create the directory if it doesn't exist
+          $directory = [System.IO.Path]::GetDirectoryName($defaultJsonPath)
+          if (-not (Test-Path $directory)) {
+              New-Item -Path $directory -ItemType Directory | Out-Null
+          }
+
+          # Check if the file exists, and create it if not
           if (-not (Test-Path $defaultJsonPath)) {
-              throw "File not found at $defaultJsonPath"
+              New-Item -Path $defaultJsonPath -ItemType File | Out-Null
           }
 
           # Update the file with the new content
