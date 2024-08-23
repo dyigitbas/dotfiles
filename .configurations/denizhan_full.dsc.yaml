@@ -1,0 +1,91 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+  resources:
+    ### Install Google Chrome
+    - resource: Google.Chrome
+      directives:
+        description: Install Google Chrome
+        allowPrerelease: true
+
+    ### Install Microsoft PowerToys
+    - resource: Microsoft.PowerToys
+      directives:
+        description: Install Microsoft PowerToys
+        allowPrerelease: true
+
+    ### Configure PowerToys Keyboard Manager with Custom Mappings
+    - resource: Microsoft.PowerToys/KeyboardManager
+      directives:
+        description: Configure custom keyboard mappings
+        allowPrerelease: true
+      settings:
+        KeyRemapping:
+          - OriginalKeys: "Win(Left)"
+            NewKeys: "Ctrl(Left)"
+          - OriginalKeys: "Alt(Left)"
+            NewKeys: "Ctrl(Left)"
+          - OriginalKeys: "Ctrl(Left)"
+            NewKeys: "Win(Left)"
+        
+        ShortcutRemapping:
+          - OriginalShortcut: "Ctrl(Left)+Tab"
+            NewShortcut: "Win(Left)+Shift(Left)+Right"
+            TargetApp: "All Apps"
+          - OriginalShortcut: "Ctrl(Left)+Space"
+            NewShortcut: "Ctrl(Left)+]"
+            TargetApp: "All Apps"
+          - OriginalShortcut: "Ctrl(Left)+H"
+            NewShortcut: "Alt(Left)+Esc"
+            TargetApp: "All Apps"
+          - OriginalShortcut: "Ctrl(Left)+Shift(Left)+S"
+            NewShortcut: "Win(Left)+Shift(Left)+S"
+            TargetApp: "All Apps"
+          - OriginalShortcut: "Ctrl(Left)+Shift(Left)+Space"
+            NewShortcut: "Ctrl(Left)+Tab"
+            TargetApp: "chrome.exe"
+
+    ### Enable PowerToys Mouse Highlighter
+    - resource: Microsoft.PowerToys/MouseHighlighter
+      directives:
+        description: Enable Mouse Highlighter
+        allowPrerelease: true
+      settings:
+        Enabled: true
+        HighlightColor: "#FFFF00"  # Yellow color for highlight
+        HighlightOpacity: 0.6      # Set the opacity of the highlight
+        HighlightRadius: 10        # Set the radius of the highlight
+        HighlightFadeDuration: 300 # Duration in milliseconds for fade out
+
+    ### Install PowerShell 7
+    - resource: Microsoft.PowerShell
+      directives:
+        description: Install PowerShell 7
+        allowPrerelease: true
+      settings:
+        Version: "7.x.x"
+
+    ### Customize Taskbar
+    - resource: Microsoft.PowerShell/Scripts
+      directives:
+        description: Customize the Windows taskbar
+        allowPrerelease: true
+      settings:
+        Script: |
+          # Remove all pinned apps from the taskbar
+          $taskbarItems = (New-Object -ComObject Shell.Application).Namespace(0).Items()
+          foreach ($item in $taskbarItems) {
+            $item.InvokeVerb('unpin from taskbar')
+          }
+
+          # Pin Google Chrome to the taskbar
+          $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+          (New-Object -ComObject Shell.Application).Namespace((Get-Item $chromePath).DirectoryName).ParseName((Get-Item $chromePath).Name).InvokeVerb('taskbarpin')
+
+          # Pin Microsoft Teams to the taskbar
+          $teamsPath = "C:\Users\%USERNAME%\AppData\Local\Microsoft\Teams\Update.exe --processStart 'Teams.exe'"
+          (New-Object -ComObject Shell.Application).Namespace((Get-Item $teamsPath).DirectoryName).ParseName((Get-Item $teamsPath).Name).InvokeVerb('taskbarpin')
+
+          # Pin Microsoft Outlook to the taskbar
+          $outlookPath = "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
+          (New-Object -ComObject Shell.Application).Namespace((Get-Item $outlookPath).DirectoryName).ParseName((Get-Item $outlookPath).Name).InvokeVerb('taskbarpin')
