@@ -185,7 +185,7 @@ properties:
     ########################################
     ### Denizhan Custom
     ########################################
-    - resource: Microsoft.PowerShell.DSC/Script
+    - resource: PSDscResources/Script
       id: CreateTestFile
       properties:
         GetScript:
