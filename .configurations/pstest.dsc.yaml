@@ -11,8 +11,8 @@ properties:
           try {
               # Define the paths to the app shortcuts
               $chromePath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk"
-              $teamsPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Teams.lnk"
-              $outlookPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office\Outlook.lnk"
+              $teamsPath = "C:\Program Files\WindowsApps\MSTeams_24137.2216.2931.2440_x64__8wekyb3d8bbwe"
+              $outlookPath = "C:\Program Files\WindowsApps\Microsoft.OutlookForWindows_1.2024.717.400_x64__8wekyb3d8bbwe"
     
               # Check if the shortcuts exist
               if (-not (Test-Path $chromePath)) { throw "Chrome shortcut not found at $chromePath" }
