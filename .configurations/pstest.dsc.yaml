@@ -5,14 +5,14 @@ properties:
     - resource: PSDscResources/Script
       id: UpdatePowerToysConfigs
       directives:
-        description: Create or update PowerToys Keyboard Manager configuration files (default and settings) as JSON Source Files
+        description: Create or update PowerToys Keyboard Manager configuration files (default.json and settings.json)
       settings:
         SetScript: |
-          # Paths to the configuration files (without .json extension)
-          $defaultJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\default"
-          $settingsJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\settings"
+          # Paths to the configuration files
+          $defaultJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\default.json"
+          $settingsJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\settings.json"
 
-          # Content for default (JSON content without .json extension)
+          # Content for default.json
           $newDefaultJsonContent = @'
           {
               "remapKeys": {
@@ -40,7 +40,7 @@ properties:
           }
           '@
 
-          # Content for settings (JSON content without .json extension)
+          # Content for settings.json
           $newSettingsJsonContent = @'
           {
             "properties": {
@@ -58,7 +58,7 @@ properties:
               New-Item -Path $directory -ItemType Directory | Out-Null
           }
 
-          # Check if default exists, create if not, and update
+          # Check if default.json exists, create if not, and update
           if (-not (Test-Path $defaultJsonPath)) {
               New-Item -Path $defaultJsonPath -ItemType File | Out-Null
           }
@@ -66,11 +66,11 @@ properties:
               $newDefaultJsonContent | Set-Content -Path $defaultJsonPath -Force
               Write-Host "Updated $defaultJsonPath successfully."
           } catch {
-              Write-Error "Failed to update the default file: $_"
+              Write-Error "Failed to update the default.json file: $_"
               throw $_
           }
 
-          # Check if settings exists, create if not, and update
+          # Check if settings.json exists, create if not, and update
           if (-not (Test-Path $settingsJsonPath)) {
               New-Item -Path $settingsJsonPath -ItemType File | Out-Null
           }
@@ -78,7 +78,7 @@ properties:
               $newSettingsJsonContent | Set-Content -Path $settingsJsonPath -Force
               Write-Host "Updated $settingsJsonPath successfully."
           } catch {
-              Write-Error "Failed to update the settings file: $_"
+              Write-Error "Failed to update the settings.json file: $_"
               throw $_
           }
         GetScript: return $false
