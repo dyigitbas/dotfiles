@@ -199,3 +199,129 @@ properties:
           - appId: Microsoft.Office.OUTLOOK
         unpinAll: true
 
+    ### Run PowerShell Script to Configure PowerToys Keyboard Manager
+    - resource: Microsoft.Powershell/Script
+      directives:
+        description: Configure PowerToys Keyboard Manager with Custom Mappings
+        allowPrerelease: true
+      settings:
+        # This script modifies the PowerToys configuration file with custom key mappings
+        Script: |
+          $powerToysConfigPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\Keyboard Manager\default.json"
+
+          if (-Not (Test-Path $powerToysConfigPath)) {
+              Write-Host "PowerToys configuration file not found. Make sure PowerToys is installed and has been run at least once."
+              exit 1
+          }
+
+          $config = Get-Content $powerToysConfigPath -Raw | ConvertFrom-Json
+
+          $keyRemapping = @(
+              @{
+                  OriginalKeys = @{
+                      Key = "Win";
+                      Code = 91;
+                      Type = "Win"
+                  }
+                  NewKeys = @{
+                      Key = "Ctrl";
+                      Code = 162;
+                      Type = "Ctrl"
+                  }
+              },
+              @{
+                  OriginalKeys = @{
+                      Key = "Alt";
+                      Code = 164;
+                      Type = "Alt"
+                  }
+                  NewKeys = @{
+                      Key = "Ctrl";
+                      Code = 162;
+                      Type = "Ctrl"
+                  }
+              },
+              @{
+                  OriginalKeys = @{
+                      Key = "Ctrl";
+                      Code = 162;
+                      Type = "Ctrl"
+                  }
+                  NewKeys = @{
+                      Key = "Win";
+                      Code = 91;
+                      Type = "Win"
+                  }
+              }
+          )
+
+          $shortcutRemapping = @(
+              @{
+                  OriginalKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "Tab"; Code = 9; Type = "Tab" }
+                  )
+                  NewKeys = @(
+                      @{ Key = "Win"; Code = 91; Type = "Win" },
+                      @{ Key = "Shift"; Code = 160; Type = "Shift" },
+                      @{ Key = "Right"; Code = 39; Type = "Right" }
+                  )
+                  TargetApp = "All Apps"
+              },
+              @{
+                  OriginalKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "Space"; Code = 32; Type = "Space" }
+                  )
+                  NewKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "]"; Code = 221; Type = "Oem6" }
+                  )
+                  TargetApp = "All Apps"
+              },
+              @{
+                  OriginalKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "H"; Code = 72; Type = "H" }
+                  )
+                  NewKeys = @(
+                      @{ Key = "Alt"; Code = 164; Type = "Alt" },
+                      @{ Key = "Esc"; Code = 27; Type = "Esc" }
+                  )
+                  TargetApp = "All Apps"
+              },
+              @{
+                  OriginalKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "Shift"; Code = 160; Type = "Shift" },
+                      @{ Key = "S"; Code = 83; Type = "S" }
+                  )
+                  NewKeys = @(
+                      @{ Key = "Win"; Code = 91; Type = "Win" },
+                      @{ Key = "Shift"; Code = 160; Type = "Shift" },
+                      @{ Key = "S"; Code = 83; Type = "S" }
+                  )
+                  TargetApp = "All Apps"
+              },
+              @{
+                  OriginalKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "Shift"; Code = 160; Type = "Shift" },
+                      @{ Key = "Space"; Code = 32; Type = "Space" }
+                  )
+                  NewKeys = @(
+                      @{ Key = "Ctrl"; Code = 162; Type = "Ctrl" },
+                      @{ Key = "Tab"; Code = 9; Type = "Tab" }
+                  )
+                  TargetApp = "chrome.exe"
+              }
+          )
+
+          $config.remapKeys = $keyRemapping
+          $config.remapShortcuts = $shortcutRemapping
+
+          $updatedConfig = $config | ConvertTo-Json -Depth 10
+          $updatedConfig | Set-Content $powerToysConfigPath
+
+          Write-Host "PowerToys Keyboard Manager configuration updated successfully."
+
