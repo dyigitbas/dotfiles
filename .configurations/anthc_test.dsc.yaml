@@ -185,14 +185,11 @@ properties:
     ########################################
     ### Denizhan Custom
     ########################################
-    ### Run PowerShell Script to Configure PowerToys Keyboard Manager
-    - resource: Microsoft.Powershell/Script
-      directives:
-        description: Configure PowerToys Keyboard Manager with Custom Mappings
-        allowPrerelease: true
-      settings:
-        # This script modifies the PowerToys configuration file with custom key mappings
-        Script: |
+     ### Run PowerShell Script to Configure PowerToys Keyboard Manager
+    - resource: PSDscResources/Script
+      id: ConfigurePowerToysKeyboardManager
+      description: Configure PowerToys Keyboard Manager with Custom Mappings
+      SetScript: |
           $powerToysConfigPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\Keyboard Manager\default.json"
 
           if (-Not (Test-Path $powerToysConfigPath)) {
@@ -310,4 +307,3 @@ properties:
           $updatedConfig | Set-Content $powerToysConfigPath
 
           Write-Host "PowerToys Keyboard Manager configuration updated successfully."
-
