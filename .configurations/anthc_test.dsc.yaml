@@ -185,20 +185,6 @@ properties:
     ########################################
     ### Denizhan Custom
     ########################################
-    ### Taskbar Customization
-    ### -------------------------------------
-    - resource: Microsoft.Windows.Desktop/Taskbar
-      directives:
-        description: Customize taskbar icons
-        allowPrerelease: true
-      settings:
-        pinnedApps:
-          - appId: Microsoft.Windows.Explorer
-          - appId: Microsoft.MSEdge
-          - appId: Microsoft.Teams
-          - appId: Microsoft.Office.OUTLOOK
-        unpinAll: true
-
     ### Run PowerShell Script to Configure PowerToys Keyboard Manager
     - resource: Microsoft.Powershell/Script
       directives:
