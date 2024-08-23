@@ -3,43 +3,53 @@ properties:
   configurationVersion: 0.2.0
   resources:
     - resource: PSDscResources/Script
-      id: CustomizeTaskbar
+      id: UpdatePowerToysConfig
       directives:
-        description: Customize the Windows taskbar to only include Chrome, Teams, and Outlook
+        description: Update PowerToys Keyboard Manager default.json file with custom key mappings
       settings:
         SetScript: |
-          try {
-              # Define the paths to the app shortcuts
-              $chromePath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk"
-              $teamsPath = "C:\Program Files\WindowsApps\MSTeams_24137.2216.2931.2440_x64__8wekyb3d8bbwe"
-              $outlookPath = "C:\Program Files\WindowsApps\Microsoft.OutlookForWindows_1.2024.717.400_x64__8wekyb3d8bbwe"
-    
-              # Check if the shortcuts exist
-              if (-not (Test-Path $chromePath)) { throw "Chrome shortcut not found at $chromePath" }
-              if (-not (Test-Path $teamsPath)) { throw "Teams shortcut not found at $teamsPath" }
-              if (-not (Test-Path $outlookPath)) { throw "Outlook shortcut not found at $outlookPath" }
-    
-              # Unpin all apps from the taskbar
-              $shell = New-Object -ComObject shell.application
-              if ($shell -eq $null) { throw "Failed to create Shell.Application COM object" }
-              
-              $taskBar = $shell.Namespace("Shell:TaskBar")
-              if ($taskBar -eq $null) { throw "Failed to access TaskBar namespace" }
-              
-              $taskBarItems = $taskBar.Items()
-              
-              foreach ($item in $taskBarItems) {
-                  $item.InvokeVerb("unpin from taskbar")
+          $defaultJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\default.json"
+
+          # Define the new content to be added to default.json
+          $newJsonContent = @'
+          {
+              "remapKeys": {
+                "inProcess": [
+                  { "originalKeys": "91", "newRemapKeys": "162" },
+                  { "originalKeys": "164", "newRemapKeys": "162" },
+                  { "originalKeys": "162", "newRemapKeys": "91" }
+                ]
+              },
+              "remapShortcuts": {
+                "global": [
+                  { "originalKeys": "162;9", "newRemapKeys": "91;160;39" },
+                  { "originalKeys": "162;32", "newRemapKeys": "162;221" },
+                  { "originalKeys": "162;72", "newRemapKeys": "164;27" },
+                  { "originalKeys": "162;160;83", "newRemapKeys": "91;160;83" }
+                ],
+                "appSpecific": [
+                  {
+                    "originalKeys": "162;160;32",
+                    "newRemapKeys": "162;9",
+                    "targetApp": "chrome.exe"
+                  }
+                ]
               }
-    
-              # Pin specified apps to the taskbar
-              $shell.NameSpace((Get-Item $chromePath).DirectoryName).ParseName((Get-Item $chromePath).Name).InvokeVerb('Pin to taskbar')
-              $shell.NameSpace((Get-Item $teamsPath).DirectoryName).ParseName((Get-Item $teamsPath).Name).InvokeVerb('Pin to taskbar')
-              $shell.NameSpace((Get-Item $outlookPath).DirectoryName).ParseName((Get-Item $outlookPath).Name).InvokeVerb('Pin to taskbar')
+          }
+          '@
+
+          # Check if the path exists
+          if (-not (Test-Path $defaultJsonPath)) {
+              throw "File not found at $defaultJsonPath"
+          }
+
+          # Update the file with the new content
+          try {
+              $newJsonContent | Set-Content -Path $defaultJsonPath -Force
+              Write-Host "Updated $defaultJsonPath successfully."
           } catch {
-              Write-Error "An error occurred: $_"
+              Write-Error "Failed to update the file: $_"
               throw $_
           }
         GetScript: return $false
         TestScript: return $false
-
