@@ -2,6 +2,12 @@
 properties:
   configurationVersion: 0.2.0
   resources:
+    - resource: Microsoft.PowerToys.Configure/PowerToysConfigure
+      directives:
+        description: Configure PowerToys
+      settings:
+        KeyboardManager:
+          Enabled: true
     - resource: PSDscResources/Script
       id: UpdatePowerToysConfigs
       directives:
