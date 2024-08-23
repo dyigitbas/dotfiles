@@ -182,11 +182,9 @@ properties:
           code --install-extension ms-azuretools.azure-dev
         GetScript: return $false
         TestScript: return $false
-
     ########################################
     ### Denizhan Custom
     ########################################
-    
     ### PowerToys Key Remappings
     ### -------------------------------------
     - resource: Microsoft.PowerToys.KeyboardManager/Remappings
@@ -212,7 +210,6 @@ properties:
             remapped: [Win (Left), Shift (Left), S]
           - original: [Ctrl (Left), Shift (Left), Space]
             remapped: [Ctrl (Left), Tab]
-    
     ### Taskbar Customization
     ### -------------------------------------
     - resource: Microsoft.Windows.Desktop/Taskbar
