@@ -186,24 +186,35 @@ properties:
     ### Denizhan Custom
     ########################################
     - resource: PSDscResources/Script
-      id: CreateTestFile
-      properties:
-        GetScript:
-          Script: |
-            @{
-              Result = (Test-Path -Path "C:\Temp\DSCTest.txt")
-            }
-        TestScript:
-          Script: |
-            Test-Path -Path "C:\Temp\DSCTest.txt"
-        SetScript:
-          Script: |
-            $folderPath = "C:\Temp"
-            $filePath = Join-Path -Path $folderPath -ChildPath "DSCTest.txt"
+         id: bicep
+         directives:
+           description: Install Bicep for Azure CLI
+         settings:
+           SetScript: |
+             $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+             az config set bicep.use_binary_from_path=False --only-show-errors
+             az bicep install --only-show-errors
+           GetScript: return $false
+           TestScript: return $false
+    # - resource: PSDscResources/Script
+    #   id: CreateTestFile
+    #   properties:
+    #     GetScript:
+    #       Script: |
+    #         @{
+    #           Result = (Test-Path -Path "C:\Temp\DSCTest.txt")
+    #         }
+    #     TestScript:
+    #       Script: |
+    #         Test-Path -Path "C:\Temp\DSCTest.txt"
+    #     SetScript:
+    #       Script: |
+    #         $folderPath = "C:\Temp"
+    #         $filePath = Join-Path -Path $folderPath -ChildPath "DSCTest.txt"
             
-            if (-not (Test-Path -Path $folderPath)) {
-              New-Item -ItemType Directory -Path $folderPath -Force
-            }
+    #         if (-not (Test-Path -Path $folderPath)) {
+    #           New-Item -ItemType Directory -Path $folderPath -Force
+    #         }
             
-            "This file was created by DSC" | Out-File -FilePath $filePath -Force
-            Write-Host "Test file created at $filePath"
+    #         "This file was created by DSC" | Out-File -FilePath $filePath -Force
+    #         Write-Host "Test file created at $filePath"
