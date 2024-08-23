@@ -6,7 +6,7 @@ properties:
     - resource: Google.Chrome
       directives:
         description: Install Google Chrome
-        allowPrerelease: true
+        # allowPrerelease: true
 
     # ### Install Microsoft PowerToys
     # - resource: Microsoft.PowerToys
