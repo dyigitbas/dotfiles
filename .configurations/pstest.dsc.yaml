@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+
+    - resource: PSDscResources/Script
+      id: CreateTestFile
+      directives:
+        description: Create a test file in C:\Users\dyigitbas\source\repos
+      settings:
+        SetScript: |
+          $filePath = "C:\Users\dyigitbas\source\repos\testfile.txt"
+          if (-not (Test-Path $filePath)) {
+              New-Item -Path $filePath -ItemType File
+          }
+        GetScript: return $false
+        TestScript: return $false
+
