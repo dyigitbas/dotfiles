@@ -196,6 +196,20 @@ properties:
           az bicep install --only-show-errors
         GetScript: return $false
         TestScript: return $false
+
+    - resource: PSDscResources/Script
+      id: CreateTestFile
+      directives:
+        description: Create a test file in C:\Users\dyigitbas\source\repos
+      settings:
+        SetScript: |
+          $filePath = "C:\Users\dyigitbas\source\repos\testfile.txt"
+          if (-not (Test-Path $filePath)) {
+              New-Item -Path $filePath -ItemType File
+          }
+        GetScript: return $false
+        TestScript: return $false
+
     # - resource: PSDscResources/Script
     #   id: CreateTestFile
     #   properties:
