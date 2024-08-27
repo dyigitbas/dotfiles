@@ -1,91 +1,13 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+# Reference: https://github.com/PowerShell/PowerShell/blob/master/docs/building/windows-core.md
 properties:
-  configurationVersion: 0.2.0
   resources:
-    - resource: Microsoft.PowerToys.Configure/PowerToysConfigure
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: FluentSearch
       directives:
-        description: Configure PowerToys
+        description: Install Fluent Search
+        allowPrerelease: false
       settings:
-        KeyboardManager:
-          Enabled: true
-    - resource: PSDscResources/Script
-      id: UpdatePowerToysConfigs
-      directives:
-        description: Create or update PowerToys Keyboard Manager configuration files (default.json and settings.json)
-      settings:
-        SetScript: |
-          # Paths to the configuration files
-          $defaultJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\default.json"
-          $settingsJsonPath = "C:\Users\dyigitbas\AppData\Local\Microsoft\PowerToys\Keyboard Manager\settings.json"
-
-          # Content for default.json
-          $newDefaultJsonContent = @'
-          {
-              "remapKeys": {
-                "inProcess": [
-                  { "originalKeys": "91", "newRemapKeys": "162" },
-                  { "originalKeys": "164", "newRemapKeys": "162" },
-                  { "originalKeys": "162", "newRemapKeys": "91" }
-                ]
-              },
-              "remapShortcuts": {
-                "global": [
-                  { "originalKeys": "162;9", "newRemapKeys": "91;160;39" },
-                  { "originalKeys": "162;32", "newRemapKeys": "162;221" },
-                  { "originalKeys": "162;72", "newRemapKeys": "164;27" },
-                  { "originalKeys": "162;160;83", "newRemapKeys": "91;160;83" }
-                ],
-                "appSpecific": [
-                  {
-                    "originalKeys": "162;160;32",
-                    "newRemapKeys": "162;9",
-                    "targetApp": "chrome.exe"
-                  }
-                ]
-              }
-          }
-          '@
-
-          # Content for settings.json
-          $newSettingsJsonContent = @'
-          {
-            "properties": {
-              "activeConfiguration": { "value": "default" },
-              "keyboardConfigurations": { "value": ["default"] }
-            },
-            "name": "Keyboard Manager",
-            "version": "1"
-          }
-          '@
-
-          # Create directories if they don't exist
-          $directory = [System.IO.Path]::GetDirectoryName($defaultJsonPath)
-          if (-not (Test-Path $directory)) {
-              New-Item -Path $directory -ItemType Directory | Out-Null
-          }
-
-          # Check if default.json exists, create if not, and update
-          if (-not (Test-Path $defaultJsonPath)) {
-              New-Item -Path $defaultJsonPath -ItemType File | Out-Null
-          }
-          try {
-              $newDefaultJsonContent | Set-Content -Path $defaultJsonPath -Force
-              Write-Host "Updated $defaultJsonPath successfully."
-          } catch {
-              Write-Error "Failed to update the default.json file: $_"
-              throw $_
-          }
-
-          # Check if settings.json exists, create if not, and update
-          if (-not (Test-Path $settingsJsonPath)) {
-              New-Item -Path $settingsJsonPath -ItemType File | Out-Null
-          }
-          try {
-              $newSettingsJsonContent | Set-Content -Path $settingsJsonPath -Force
-              Write-Host "Updated $settingsJsonPath successfully."
-          } catch {
-              Write-Error "Failed to update the settings.json file: $_"
-              throw $_
-          }
-        GetScript: return $false
-        TestScript: return $false
+        id: "9nk1hlwhnp8s"
+        source: msstore
+  configurationVersion: 0.2.0
