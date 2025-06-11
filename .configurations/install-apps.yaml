@@ -1,3 +1,4 @@
+$schema: https://aka.ms/configuration-dsc-schema/0.2
 name: MyDevBox
 version: 0.1.0
 description: Personal development environment customization
